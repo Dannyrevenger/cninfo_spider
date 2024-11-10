@@ -7,6 +7,7 @@ from utils.setup_log import logger
 from utils.docs_operate import *
 from spider.which_market import *
 from spider.decorator import *
+import platform
 
 
 @record_error_then_continue
@@ -25,8 +26,11 @@ async def scratch_sina(contents, date, keywords):
     async with async_playwright() as p:
         # Launch the browser
         logger.info('[-]创建浏览器实例...')
-        browser = await p.chromium.launch(executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", headless=True)
-
+        system = platform.system()
+        if system == "Darwin":
+            browser = await p.chromium.launch(executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", headless=True)
+        elif system == "Windows":
+            browser = await p.chromium.launch(headless=True)
         # Create a new browser context
         context = await browser.new_context()
 
